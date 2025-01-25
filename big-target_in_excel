@@ -1,0 +1,685 @@
+from pprint import pprint
+import pdb 
+import pandas as pd
+import time
+import zrd_login
+import datetime
+import support_file01 as sf
+import xlwings as xw
+
+
+
+def ATM_finder_CE_ltp(name,name1):
+    expiry = L_expiry
+    ltp = kite.ltp(['NSE:'+ name])['NSE:'+ name]['last_price']
+    step_value = 100
+    multiplier = 0
+    atm_strike = round(ltp/step_value)* step_value + multiplier*step_value
+    CE_ATM = (name1 + expiry + str(atm_strike ) + 'CE' )
+    ltp_CE_ATM = sf.LTP_NFO(CE_ATM)
+    return (ltp_CE_ATM)
+
+def ATM_finder_PE_ltp(name,name1):
+    expiry = L_expiry
+    ltp = kite.ltp(['NSE:'+ name])['NSE:'+ name]['last_price']
+    step_value = 100
+    multiplier = 0
+    atm_strike = round(ltp/step_value)* step_value + multiplier*step_value
+    PE_ATM = (name1 + expiry + str(atm_strike ) + 'PE' )
+    ltp_PE_ATM = sf.LTP_NFO(PE_ATM)
+    return (ltp_PE_ATM)
+
+def ATM_finder_CE(name,name1):
+    expiry = L_expiry
+    ltp = kite.ltp(['NSE:'+ name])['NSE:'+ name]['last_price']
+    step_value = 100
+    multiplier = 0
+    atm_strike = round(ltp/step_value)* step_value + multiplier*step_value
+    CE_ATM = (name1 + expiry + str(atm_strike ) + 'CE' )
+    return (CE_ATM)
+
+def ATM_finder_PE(name,name1):
+    expiry = L_expiry
+    ltp = kite.ltp(['NSE:'+ name])['NSE:'+ name]['last_price']
+    step_value = 100
+    multiplier = 0
+    atm_strike = round(ltp/step_value)* step_value + multiplier*step_value
+    PE_ATM = (name1 + expiry + str(atm_strike ) + 'PE' )
+    return (PE_ATM)
+
+def init():
+    global kite,name,name1,buy_signal,temp_CE,temp_PE,Status_CE,Status_PE,wb,sht_Trade,sht_Trgt,sht_CE,sht_PE,Qty,Sl_CE,Sl_PE,x,y,z,q,xx,yy,zz,qq,trade_CE,trade_PE,trade_CE_Nrml,trade_PE_Nrml,Status_CE_Nrml,Status_PE_Nrml,trade_CE_Nrml,trade_PE_Nrml,sht_CE_Nrml,sht_PE_Nrml,dyn_qty,L_expiry
+    kite = zrd_login.kite
+    name = 'NIFTY 50'
+    name1 = 'NIFTY'
+
+    buy_signal = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375,376,377,378,379,380,381,382,383,384,385,386,387,388,389,390,391,392,393,394,395,396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411]
+    temp_CE = {'open':None,'traded':None,'time':None,'date':None, 'ATM':None,'buy_ltp':None,'target':None,'Remark':None,'ltp_ATM':None,'sell_ltp':None,'Pnl':None,'close':None,'low':None,'high':None,'tradeno_CE':None,'x':None,'y':None,'z':None,'q':None}
+  
+    temp_PE = {'open':None,'traded':None,'time':None,'date':None, 'ATM':None,'buy_ltp':None,'target':None,'Remark':None,'ltp_ATM':None,'sell_ltp':None,'Pnl':None,'close':None,'low':None,'high':None,'tradeno_PE':None,'xx':None,'yy':None,'zz':None,'qq':None} 
+    temp_CE_Nrml = {'open':None,'traded':None,'time':None,'date':None, 'ATM':None,'buy_ltp':None,'target':None,'Remark':None,'ltp_ATM':None,'sell_ltp':None,'Pnl':None,'close':None,'low':None,'high':None,'sell_orderid_CE':None,'buy_orderid_CE':None} 
+    temp_PE_Nrml = {'open':None,'traded':None,'time':None,'date':None, 'ATM':None,'buy_ltp':None,'target':None,'Remark':None,'ltp_ATM':None,'sell_ltp':None,'Pnl':None,'close':None,'low':None,'high':None,'sell_orderid_PE':None,'buy_orderid_PE':None} 
+    Status_CE = {}
+    Status_PE = {} 
+    Status_CE_Nrml = {} 
+    Status_PE_Nrml = {} 
+  
+    for trade_CE in buy_signal:
+        Status_CE[trade_CE] = temp_CE.copy()
+    for trade_PE in buy_signal:
+        Status_PE[trade_PE] = temp_PE.copy()
+    for trade_CE_Nrml in buy_signal:
+        Status_CE_Nrml[trade_CE_Nrml] = temp_CE_Nrml.copy()
+    for trade_PE_Nrml in buy_signal:
+        Status_PE_Nrml[trade_PE_Nrml] = temp_PE_Nrml.copy()
+
+
+    wb = xw.Book('big_target_excel.xlsx')
+    sht_Trade = wb.sheets['Sheet_Trade']
+    sht_CE = wb.sheets['Sheet_CE']
+    sht_PE = wb.sheets['Sheet_PE']
+    sht_Trgt = wb.sheets['Sheet_Trgt']
+    sht_CE_Nrml = wb.sheets['Sheet_CE_Nrml']
+    sht_PE_Nrml = wb.sheets['Sheet_PE_Nrml']
+    sht_Trgt.range('E1').value = 'L_expiry'
+    L_expiry = str(sht_Trgt.range('E2').value)
+    sht_CE.range("a:az").value  = None
+    sht_CE_Nrml.range("a:az").value  = None
+    sht_PE.range("a:az").value  = None
+    sht_PE_Nrml.range("a:az").value  = None
+    sht_Trade.range("f2:f411").value = None
+    sht_Trade.range("g2").options(transpose=True).value = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375,376,377,378,379,380,381,382,383,384,385,386,387,388,389,390,391,392,393,394,395,396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411]
+
+    Qty = 25
+    dyn_qty = 7
+
+
+
+    x = 1
+    y = 1
+    z = 2
+    q = 2
+    xx = 1
+    yy = 1
+    zz = 2
+    qq = 2
+    # pdb.set_trace()
+
+init()
+while True:
+    try:
+        ctime1 = datetime.datetime.now().time()
+        ctime = datetime.datetime.now()
+        sht_Trade.range('F1').value = 'SIGNAL'
+        sht_Trade.range('G1').value = 'Fake_SIGNAL'
+
+        sht_Trgt.range('C1').value = 'Target'
+        buy_signal = sht_Trade.range('F2:F410').value
+        Target = sht_Trgt.range('C2:C9').value
+
+        CE_ATM = ATM_finder_CE(name,name1)
+        ltp_CE_ATM = ATM_finder_CE_ltp(name,name1)
+        PE_ATM = ATM_finder_PE(name,name1)
+        ltp_PE_ATM = ATM_finder_PE_ltp(name,name1)
+        # pdb.set_trace()
+
+        for i , val in enumerate(buy_signal):
+            trade_CE = i + 2
+            trade_PE = i + 2
+            trade_CE_Nrml = i + 2
+            trade_PE_Nrml = i + 2
+# --------------------------------------------------------------------------------CALL_BUY_Revenge-------------------------------------------------------------------------------------------------------------------
+            if (val == 'bcr') and Status_CE[trade_CE]['traded'] is None and (sht_Trade.range('G' + str(int(i + 2))).value == int(i + 2)):
+                k = 0
+                Status_CE[trade_CE]['traded'] = 'yes'
+                sht_Trade.range('G' + str(int(i + 2))).value = 'False' + str(i + 2)
+                Status_CE[trade_CE]['time'] = str(ctime.time())
+                Status_CE[trade_CE]['date'] = str(ctime.date())
+                Status_CE[trade_CE]['ATM'] = CE_ATM
+                Status_CE[trade_CE]['buy_ltp'] = ltp_CE_ATM
+                hist1 = sf.histo_data(name= Status_CE[trade_CE]['ATM'], segment='NFO:', delta=1, interval='minute', continuous=False, oi=False)               
+                Status_CE[trade_CE]['open']  = hist1.iloc[-1]['open']
+                Status_CE[trade_CE]['target'] = (Status_CE[trade_CE]['open']) + (Target[k]*(Status_CE[trade_CE]['open']))
+                hist2 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist2 = hist2.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30") 
+                Status_CE[trade_CE]['low']  = hist2.loc[Completed_candle]['low']
+                sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+
+            if (Status_CE[trade_CE]['traded'] == 'yes') and (Status_CE[trade_CE]['Remark'] is None) and sht_Trade.range('G' + str(int(i + 2))).value == 'False'+ str(i + 2):
+                Status_CE[trade_CE]['ltp_ATM'] = kite.ltp(['NFO:'+ Status_CE[trade_CE]['ATM']])['NFO:'+ Status_CE[trade_CE]['ATM']]['last_price']
+                print(Status_CE[trade_CE]['ltp_ATM'])
+                sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+                aa = (Status_CE[trade_CE]['date'])+' '+(Status_CE[trade_CE]['time'])[0:5]+':00'+'+05:30'
+                hist3 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist3 = hist3.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30") 
+                sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+            
+    # -------------------------------------------------------------------------------------For Target 1-------------------------------------------------------------------------------------
+                if (Status_CE[trade_CE]['ltp_ATM'] > Status_CE[trade_CE]['target']) and Status_CE[trade_CE]['Remark'] is None:
+                    Status_CE[trade_CE]['sell_ltp'] = Status_CE[trade_CE]['ltp_ATM']
+                    Status_CE[trade_CE]['Pnl'] = Status_CE[trade_CE]['sell_ltp'] - Status_CE[trade_CE]['buy_ltp']
+                    Status_CE[trade_CE]['Remark'] ='Target_Hit_0'
+                    sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+                   
+                if (Completed_candle > aa):
+                    Status_CE[trade_CE]['close']  = hist3.loc[Completed_candle]['close']
+                    sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+                   
+                    if (Status_CE[trade_CE]['close'] < Status_CE[trade_CE]['low']) and Status_CE[trade_CE]['Remark'] is None:
+                        Status_CE[trade_CE]['sell_ltp'] = Status_CE[trade_CE]['ltp_ATM']
+                        Status_CE[trade_CE]['Pnl'] = Status_CE[trade_CE]['sell_ltp'] - Status_CE[trade_CE]['buy_ltp']
+                        Status_CE[trade_CE]['Remark'] ='sl_hit_CE_1'
+                        
+                    
+                        sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+                      
+                        Status_CE[trade_CE] = {'open':None,'traded':None,'time':None,'date':None, 'ATM':None,'buy_ltp':None,'target':None,'Remark':None,'ltp_ATM':None,'sell_ltp':None,'Pnl':None,'close':None,'low':None,'high':None,'tradeno_CE':None}
+                        Status_CE[trade_CE]['Remark'] ='sl_hit_CE_1'
+                        Status_CE[trade_CE]['x'] = x
+                        Status_CE[trade_CE]['y'] = y
+                        Status_CE[trade_CE]['z'] = z
+                        Status_CE[trade_CE]['q'] = q
+                        sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+
+
+
+        # --------------------------------------------------------------------------------For Target 2-------------------------------------------------------------------------------------       
+            if (Status_CE[trade_CE]['traded'] is None) and (Status_CE[trade_CE]['Remark'] == 'sl_hit_CE_' + str(Status_CE[trade_CE]['x'])) and (Status_CE[trade_CE]['x'] < (dyn_qty + 1)) and sht_Trade.range('G' + str(int(i + 2))).value == 'False' + str(i+2):
+                k = Status_CE[trade_CE]['x'] 
+                Status_CE[trade_CE]['traded'] = 'yes'
+                Status_CE[trade_CE]['time'] = str(ctime.time())
+                Status_CE[trade_CE]['date'] = str(ctime.date())
+                Status_CE[trade_CE]['ATM'] = PE_ATM
+                Status_CE[trade_CE]['buy_ltp'] = ltp_PE_ATM
+                hist1 = sf.histo_data(name= Status_CE[trade_CE]['ATM'], segment='NFO:', delta=1, interval='minute', continuous=False, oi=False)
+                Status_CE[trade_CE]['open']  = hist1.iloc[-1]['open']
+                Status_CE[trade_CE]['target'] = (Status_CE[trade_CE]['open']) + (Target[k]*(Status_CE[trade_CE]['open']))
+                hist2 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist2 = hist2.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+                Status_CE[trade_CE]['high']  = hist2.loc[Completed_candle]['high']
+                sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+
+            if (Status_CE[trade_CE]['traded'] == 'yes') and (Status_CE[trade_CE]['Remark'] == 'sl_hit_CE_' + str(Status_CE[trade_CE]['y'])) and (Status_CE[trade_CE]['y'] < (dyn_qty + 1)) and sht_Trade.range('G' + str(int(i + 2))).value == 'False' + str(i + 2):
+                Status_CE[trade_CE]['ltp_ATM'] = kite.ltp(['NFO:'+ Status_CE[trade_CE]['ATM']])['NFO:'+ Status_CE[trade_CE]['ATM']]['last_price']
+                print(Status_CE[trade_CE]['ltp_ATM'])
+                bb = (Status_CE[trade_CE]['date'])+' '+(Status_CE[trade_CE]['time'])[0:5]+':00'+'+05:30'
+                hist3 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist3 = hist3.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+                sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+
+                if (Status_CE[trade_CE]['ltp_ATM'] > Status_CE[trade_CE]['target']) and Status_CE[trade_CE]['Remark'] == 'sl_hit_CE_' + str(Status_CE[trade_CE]['y']):
+                    Status_CE[trade_CE]['sell_ltp'] = Status_CE[trade_CE]['ltp_ATM']
+                    Status_CE[trade_CE]['Pnl'] = Status_CE[trade_CE]['sell_ltp'] - Status_CE[trade_CE]['buy_ltp']
+                    Status_CE[trade_CE]['Remark'] ='Target_hit'+ str(Status_CE[trade_CE]['y'])
+                                          
+                    sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+                                                               
+                if (Completed_candle > bb):
+                    Status_CE[trade_CE]['close']  = hist3.loc[Completed_candle]['close']          
+                    if (Status_CE[trade_CE]['close'] > Status_CE[trade_CE]['high']) and Status_CE[trade_CE]['Remark'] == 'sl_hit_CE_' + str(Status_CE[trade_CE]['y']):
+                        Status_CE[trade_CE]['sell_ltp'] = Status_CE[trade_CE]['ltp_ATM']
+                        Status_CE[trade_CE]['Pnl'] = Status_CE[trade_CE]['sell_ltp'] - Status_CE[trade_CE]['buy_ltp']
+                        Status_CE[trade_CE]['Remark'] ='sl_hit_CE_' + str(Status_CE[trade_CE]['y']+1)
+                        sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+                        # pdb.set_trace()
+                        Status_CE[trade_CE] = {'open':None,'traded':None,'time':None,'date':None, 'ATM':None,'buy_ltp':None,'target':None,'Remark':None,'ltp_ATM':None,'sell_ltp':None,'Pnl':None,'close':None,'low':None,'high':None,'tradeno_CE':None,'x': Status_CE[trade_CE]['x'] + 2, 'y': Status_CE[trade_CE]['y'] + 2, 'z': Status_CE[trade_CE]['z'], 'q': Status_CE[trade_CE]['q']}
+                        Status_CE[trade_CE]['Remark'] ='sl_hit_CE_' + str(Status_CE[trade_CE]['y']-1)
+                        sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+
+
+
+        # ----------------------------------------------------------------------------------For Target 3-------------------------------------------------------------------------------------                        
+            if (Status_CE[trade_CE]['traded'] is None) and (Status_CE[trade_CE]['Remark'] == 'sl_hit_CE_' + str(Status_CE[trade_CE]['z']))  and (Status_CE[trade_CE]['z'] < dyn_qty) and sht_Trade.range('G' + str(int(i + 2))).value == 'False' + str(i+2):
+                k = Status_CE[trade_CE]['z'] 
+                Status_CE[trade_CE]['traded'] = 'yes'
+                Status_CE[trade_CE]['time'] = str(ctime.time())
+                Status_CE[trade_CE]['date'] = str(ctime.date())
+                Status_CE[trade_CE]['ATM'] = CE_ATM
+                Status_CE[trade_CE]['buy_ltp'] = ltp_CE_ATM
+                hist1 = sf.histo_data(name= Status_CE[trade_CE]['ATM'], segment='NFO:', delta=1, interval='minute', continuous=False, oi=False)
+                Status_CE[trade_CE]['open']  = hist1.iloc[-1]['open']
+                Status_CE[trade_CE]['target'] = (Status_CE[trade_CE]['open']) + (Target[k]*(Status_CE[trade_CE]['open'])) 
+                hist2 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist2 = hist2.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+                Status_CE[trade_CE]['low']  = hist2.loc[Completed_candle]['low']
+                sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+
+            if (Status_CE[trade_CE]['traded'] == 'yes') and (Status_CE[trade_CE]['Remark'] == 'sl_hit_CE_' + str(Status_CE[trade_CE]['q'])) and (Status_CE[trade_CE]['q'] < dyn_qty) and sht_Trade.range('G' + str(int(i + 2))).value == 'False' + str(i+2):
+                Status_CE[trade_CE]['ltp_ATM'] = kite.ltp(['NFO:'+ Status_CE[trade_CE]['ATM']])['NFO:'+ Status_CE[trade_CE]['ATM']]['last_price']
+                print(Status_CE[trade_CE]['ltp_ATM'])
+                cc = (Status_CE[trade_CE]['date'])+' '+(Status_CE[trade_CE]['time'])[0:5]+':00'+'+05:30'
+                hist3 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist3 = hist3.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+                sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+
+                if (Status_CE[trade_CE]['ltp_ATM'] > Status_CE[trade_CE]['target']) and Status_CE[trade_CE]['Remark'] == 'sl_hit_CE_'+ str(Status_CE[trade_CE]['q']):
+                    Status_CE[trade_CE]['sell_ltp'] = Status_CE[trade_CE]['ltp_ATM']
+                    Status_CE[trade_CE]['Pnl'] = Status_CE[trade_CE]['sell_ltp'] - Status_CE[trade_CE]['buy_ltp']
+                    Status_CE[trade_CE]['Remark'] ='Target_hit' + str(Status_CE[trade_CE]['q'])                        
+                    
+                    sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+                                                                  
+                if (Completed_candle > cc):
+                    Status_CE[trade_CE]['close']  = hist3.loc[Completed_candle]['close']                       
+                    if (Status_CE[trade_CE]['close'] < Status_CE[trade_CE]['low']) and Status_CE[trade_CE]['Remark'] == 'sl_hit_CE_' + str(Status_CE[trade_CE]['q']):
+                        Status_CE[trade_CE]['sell_ltp'] = Status_CE[trade_CE]['ltp_ATM']
+                        Status_CE[trade_CE]['Pnl'] = Status_CE[trade_CE]['sell_ltp'] - Status_CE[trade_CE]['buy_ltp']
+                        Status_CE[trade_CE]['Remark'] ='sl_hit_CE_' + str(Status_CE[trade_CE]['q']+1)
+                        
+                        sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+                        Status_CE[trade_CE] = {'open':None,'traded':None,'time':None,'date':None, 'ATM':None,'buy_ltp':None,'target':None,'Remark':None,'ltp_ATM':None,'sell_ltp':None,'Pnl':None,'close':None,'low':None,'high':None,'tradeno_CE':None,'x': Status_CE[trade_CE]['x'], 'y': Status_CE[trade_CE]['y'], 'z': Status_CE[trade_CE]['z'] + 2, 'q': Status_CE[trade_CE]['q'] + 2}
+                        
+                        Status_CE[trade_CE]['Remark'] ='sl_hit_CE_' + str(Status_CE[trade_CE]['q']-1)
+                        sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+
+
+        # -----------------------------------------------------------------------------------------------For Target 7-------------------------------------------------------------------------------------
+            if (Status_CE[trade_CE]['traded'] is None) and (Status_CE[trade_CE]['Remark'] == 'sl_hit_CE_' + str(dyn_qty))  and sht_Trade.range('G' + str(int(i + 2))).value == 'False' + str(i +2):
+                k = 7
+                Status_CE[trade_CE]['traded'] = 'yes'
+                Status_CE[trade_CE]['time'] = str(ctime.time())
+                Status_CE[trade_CE]['date'] = str(ctime.date())
+                Status_CE[trade_CE]['ATM'] = PE_ATM
+                Status_CE[trade_CE]['buy_ltp'] = ltp_PE_ATM
+                hist1 = sf.histo_data(name= Status_CE[trade_CE]['ATM'], segment='NFO:', delta=1, interval='minute', continuous=False, oi=False)
+                Status_CE[trade_CE]['open']  = hist1.iloc[-1]['open']
+                Status_CE[trade_CE]['target'] = (Status_CE[trade_CE]['open']) + (Target[k]*(Status_CE[trade_CE]['open'])) 
+                hist2 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist2 = hist2.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+                Status_CE[trade_CE]['high']  = hist2.loc[Completed_candle]['high']
+                sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+                    
+            if (Status_CE[trade_CE]['traded'] == 'yes') and (Status_CE[trade_CE]['Remark'] == 'sl_hit_CE_'+ str(dyn_qty)) and sht_Trade.range('G' + str(int(i + 2))).value == 'False' + str(i+2):
+                Status_CE[trade_CE]['ltp_ATM'] = kite.ltp(['NFO:'+ Status_CE[trade_CE]['ATM']])['NFO:'+ Status_CE[trade_CE]['ATM']]['last_price']
+                print(Status_CE[trade_CE]['ltp_ATM'])
+                dd = (Status_CE[trade_CE]['date'])+' '+(Status_CE[trade_CE]['time'])[0:5]+':00'+'+05:30'
+                hist3 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist3 = hist3.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+                sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+
+                if (Status_CE[trade_CE]['ltp_ATM'] > Status_CE[trade_CE]['target']) and Status_CE[trade_CE]['Remark'] == 'sl_hit_CE_'+ str(dyn_qty):                        
+                    Status_CE[trade_CE]['sell_ltp'] = Status_CE[trade_CE]['ltp_ATM']
+                    Status_CE[trade_CE]['Pnl'] = Status_CE[trade_CE]['sell_ltp'] - Status_CE[trade_CE]['buy_ltp']
+                    Status_CE[trade_CE]['Remark'] ='Target_hit'
+                    sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+                                            
+                if (Completed_candle > dd):
+                    Status_CE[trade_CE]['close']  = hist3.loc[Completed_candle]['close']                        
+                    if (Status_CE[trade_CE]['close'] > Status_CE[trade_CE]['high']) and Status_CE[trade_CE]['Remark'] == 'sl_hit_CE_'+ str(dyn_qty):
+                        Status_CE[trade_CE]['sell_ltp'] = Status_CE[trade_CE]['ltp_ATM']
+                        Status_CE[trade_CE]['Pnl'] = Status_CE[trade_CE]['sell_ltp'] - Status_CE[trade_CE]['buy_ltp']
+                        Status_CE[trade_CE]['Remark'] ='sl_hit_CE_'+ str(dyn_qty+1)
+                        sht_CE.range('A1').value = pd.DataFrame(Status_CE).T
+                        
+# ----------------------------------------------------------------/*BUY PUT_Revenge*/----------------------------------------------------------------------------------------------------
+
+            if (val == 'bpr') and Status_PE[trade_PE]['traded'] is None and (sht_Trade.range('G' + str(int(i + 2))).value == int(i + 2)):
+                k = 0
+                Status_PE[trade_PE]['traded'] = 'yes'
+                sht_Trade.range('G' + str(int(i + 2))).value  = 'False' + str(i + 2)
+                Status_PE[trade_PE]['time'] = str(ctime.time())
+                Status_PE[trade_PE]['date'] = str(ctime.date())
+                Status_PE[trade_PE]['ATM'] = PE_ATM
+                Status_PE[trade_PE]['buy_ltp'] = ltp_PE_ATM
+                hist1 = sf.histo_data(name= Status_PE[trade_PE]['ATM'], segment='NFO:', delta=1, interval='minute', continuous=False, oi=False)
+                Status_PE[trade_PE]['open']  = hist1.iloc[-1]['open']
+                Status_PE[trade_PE]['target'] = (Status_PE[trade_PE]['open']) + (Target[k]*(Status_PE[trade_PE]['open']))
+                hist2 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist2 = hist2.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+                Status_PE[trade_CE]['high']  = hist2.loc[Completed_candle]['high']
+                sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+
+                # pdb.set_trace()
+            if (Status_PE[trade_PE]['traded'] == 'yes') and (Status_PE[trade_PE]['Remark'] is None) and sht_Trade.range('G' + str(int(i + 2))).value == 'False' + str(i+2):
+                Status_PE[trade_PE]['ltp_ATM'] = kite.ltp(['NFO:'+ Status_PE[trade_PE]['ATM']])['NFO:'+ Status_PE[trade_PE]['ATM']]['last_price']
+                print(Status_PE[trade_PE]['ltp_ATM'])
+                ee = (Status_PE[trade_PE]['date'])+' '+(Status_PE[trade_PE]['time'])[0:5]+':00'+'+05:30'
+                hist3 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist3 = hist3.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+                
+                sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+
+                if (Status_PE[trade_PE]['ltp_ATM'] > Status_PE[trade_PE]['target']) and Status_PE[trade_PE]['Remark'] is None:
+                    Status_PE[trade_PE]['sell_ltp'] = Status_PE[trade_PE]['ltp_ATM']
+                    Status_PE[trade_PE]['Pnl'] = Status_PE[trade_PE]['sell_ltp'] - Status_PE[trade_PE]['buy_ltp']
+                    Status_PE[trade_PE]['Remark'] ='Target_hit_0'
+                    sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+                      
+                   
+                if (Completed_candle > ee):
+                    Status_PE[trade_PE]['close']  = hist3.loc[Completed_candle]['close']
+                    sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+
+                    if (Status_PE[trade_PE]['close'] > Status_PE[trade_PE]['high']) and Status_PE[trade_PE]['Remark'] is None:
+                        Status_PE[trade_PE]['sell_ltp'] = Status_PE[trade_PE]['ltp_ATM']
+                        Status_PE[trade_PE]['Pnl'] = Status_PE[trade_PE]['sell_ltp'] - Status_PE[trade_PE]['buy_ltp']
+                        Status_PE[trade_PE]['Remark'] ='sl_hit_PE_1'
+                        sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+                        Status_PE[trade_PE] = {'open':None,'traded':None,'time':None,'date':None, 'ATM':None,'buy_ltp':None,'target':None,'Remark':None,'ltp_ATM':None,'sell_ltp':None,'Pnl':None,'close':None,'low':None,'high':None,'tradeno_CE':None,'xx':None,'yy':None,'zz':None,'qq':None}
+                        Status_PE[trade_PE]['Remark'] ='sl_hit_PE_1'
+                        Status_PE[trade_PE]['xx'] = xx
+                        Status_PE[trade_PE]['yy'] = yy
+                        Status_PE[trade_PE]['zz'] = zz
+                        Status_PE[trade_PE]['qq'] = qq
+                        sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+                       
+
+        # --------------------------------------------------------------------------BUY_PUT_Target_2----------------------------------------------------------------------------------------------------
+
+            if (Status_PE[trade_PE]['traded'] is None) and (Status_PE[trade_PE]['Remark'] == 'sl_hit_PE_' + str(Status_PE[trade_PE]['xx'])) and (Status_PE[trade_PE]['xx'] < (dyn_qty + 1)) and sht_Trade.range('G' + str(int(i + 2))).value == 'False' + str(i+2):
+                k = Status_PE[trade_PE]['xx']
+                Status_PE[trade_PE]['traded'] = 'yes'
+                Status_PE[trade_PE]['time'] = str(ctime.time())
+                Status_PE[trade_PE]['date'] = str(ctime.date())
+                Status_PE[trade_PE]['ATM'] = CE_ATM
+                Status_PE[trade_PE]['buy_ltp'] = ltp_CE_ATM
+                hist1 = sf.histo_data(name= Status_PE[trade_PE]['ATM'], segment='NFO:', delta=1, interval='minute', continuous=False, oi=False)
+                Status_PE[trade_PE]['open']  = hist1.iloc[-1]['open']
+                Status_PE[trade_PE]['target'] = (Status_PE[trade_PE]['open']) + (Target[k]*(Status_PE[trade_PE]['open']))
+                hist2 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist2 = hist2.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+                Status_PE[trade_PE]['low']  = hist2.loc[Completed_candle]['low']
+                sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+
+            if (Status_PE[trade_PE]['traded'] == 'yes') and (Status_PE[trade_PE]['Remark'] == 'sl_hit_PE_' + str(Status_PE[trade_PE]['yy'])) and (Status_PE[trade_PE]['yy'] < (dyn_qty + 1)) and sht_Trade.range('G' + str(int(i + 2))).value == 'False' + str(i + 2):
+                Status_PE[trade_PE]['ltp_ATM'] = kite.ltp(['NFO:'+ Status_PE[trade_PE]['ATM']])['NFO:'+ Status_PE[trade_PE]['ATM']]['last_price']
+                print(Status_PE[trade_PE]['ltp_ATM'])
+                ff = (Status_PE[trade_PE]['date'])+' '+(Status_PE[trade_PE]['time'])[0:5]+':00'+'+05:30'
+                hist3 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist3 = hist3.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+                sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+                if (Status_PE[trade_PE]['ltp_ATM'] > Status_PE[trade_PE]['target']) and Status_PE[trade_PE]['Remark'] == 'sl_hit_PE_' + str(Status_PE[trade_PE]['yy']):
+                    Status_PE[trade_PE]['sell_ltp'] = Status_PE[trade_PE]['ltp_ATM']
+                    Status_PE[trade_PE]['Pnl'] = Status_PE[trade_PE]['sell_ltp'] - Status_PE[trade_PE]['buy_ltp']
+                    Status_PE[trade_PE]['Remark'] ='Target_hit'+ str(Status_PE[trade_PE]['yy'])
+                                          
+                    sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+                                                               
+                if (Completed_candle > ff):
+                    Status_PE[trade_PE]['close']  = hist3.loc[Completed_candle]['close']
+                    if (Status_PE[trade_PE]['close'] < Status_PE[trade_PE]['low']) and Status_PE[trade_PE]['Remark'] == 'sl_hit_PE_' + str(Status_PE[trade_PE]['yy']):
+                        Status_PE[trade_PE]['sell_ltp'] = Status_PE[trade_PE]['ltp_ATM']
+                        Status_PE[trade_PE]['Pnl'] = Status_PE[trade_PE]['sell_ltp'] - Status_PE[trade_PE]['buy_ltp']
+                        Status_PE[trade_PE]['Remark'] ='sl_hit_PE_' + str(Status_PE[trade_PE]['yy']+1)
+                        sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+                        Status_PE[trade_PE] = {'open':None,'traded':None,'time':None,'date':None, 'ATM':None,'buy_ltp':None,'target':None,'Remark':None,'ltp_ATM':None,'sell_ltp':None,'Pnl':None,'close':None,'low':None,'high':None,'tradeno_CE':None,'xx': Status_PE[trade_PE]['xx'] + 2, 'yy': Status_PE[trade_PE]['yy'] + 2, 'zz': Status_PE[trade_PE]['zz'], 'qq': Status_PE[trade_PE]['qq']}
+                        Status_PE[trade_PE]['Remark'] ='sl_hit_PE_' + str(Status_PE[trade_PE]['yy']-1)
+                        sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+
+
+        # ---------------------------------------------------------------------------------------------BUY_PUT_Target_3---------------------------------------------------------------------------------------------
+
+            if (Status_PE[trade_PE]['traded'] is None) and (Status_PE[trade_PE]['Remark'] == 'sl_hit_PE_' + str(Status_PE[trade_PE]['zz']))  and (Status_PE[trade_PE]['zz'] < dyn_qty) and sht_Trade.range('G' + str(int(i + 2))).value == 'False' + str(i+2):
+                k = Status_PE[trade_PE]['zz']
+                Status_PE[trade_PE]['traded'] = 'yes'
+                Status_PE[trade_PE]['time'] = str(ctime.time())
+                Status_PE[trade_PE]['date'] = str(ctime.date())
+                Status_PE[trade_PE]['ATM'] = PE_ATM
+                Status_PE[trade_PE]['buy_ltp'] = ltp_PE_ATM
+                hist1 = sf.histo_data(name= Status_PE[trade_PE]['ATM'], segment='NFO:', delta=1, interval='minute', continuous=False, oi=False)
+                Status_PE[trade_PE]['open']  = hist1.iloc[-1]['open']
+                Status_PE[trade_PE]['target'] = (Status_PE[trade_PE]['open']) + (Target[k]*(Status_PE[trade_PE]['open'])) 
+                hist2 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist2 = hist2.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+                Status_PE[trade_PE]['high']  = hist2.loc[Completed_candle]['high']
+                
+                sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+
+            if (Status_PE[trade_PE]['traded'] == 'yes') and (Status_PE[trade_PE]['Remark'] == 'sl_hit_PE_' + str(Status_PE[trade_PE]['qq'])) and (Status_PE[trade_PE]['qq'] < dyn_qty) and sht_Trade.range('G' + str(int(i + 2))).value == 'False' + str(i+2):
+                Status_PE[trade_PE]['ltp_ATM'] = kite.ltp(['NFO:'+ Status_PE[trade_PE]['ATM']])['NFO:'+ Status_PE[trade_PE]['ATM']]['last_price']
+                print(Status_PE[trade_PE]['ltp_ATM'])
+                gg = (Status_PE[trade_PE]['date'])+' '+(Status_PE[trade_PE]['time'])[0:5]+':00'+'+05:30'
+                hist3 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist3 = hist3.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+                sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+
+                if (Status_PE[trade_PE]['ltp_ATM'] > Status_PE[trade_PE]['target']) and Status_PE[trade_PE]['Remark'] == 'sl_hit_PE_'+ str(Status_PE[trade_PE]['qq']):
+                    Status_PE[trade_PE]['sell_ltp'] = Status_PE[trade_PE]['ltp_ATM']
+                    Status_PE[trade_PE]['Pnl'] = Status_PE[trade_PE]['sell_ltp'] - Status_PE[trade_PE]['buy_ltp']
+                    Status_PE[trade_PE]['Remark'] ='Target_hit' + str(Status_PE[trade_PE]['qq'])                        
+                    
+                    sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+                                                                  
+                if (Completed_candle > gg):
+                    Status_PE[trade_PE]['close']  = hist3.loc[Completed_candle]['close']                       
+                    if (Status_PE[trade_PE]['close'] > Status_PE[trade_PE]['high']) and Status_PE[trade_PE]['Remark'] == 'sl_hit_PE_' + str(Status_PE[trade_PE]['qq']):
+                        Status_PE[trade_PE]['sell_ltp'] = Status_PE[trade_PE]['ltp_ATM']
+                        Status_PE[trade_PE]['Pnl'] = Status_PE[trade_PE]['sell_ltp'] - Status_PE[trade_PE]['buy_ltp']
+                        Status_PE[trade_PE]['Remark'] ='sl_hit_PE_' + str(Status_PE[trade_PE]['qq']+1)
+                        
+                        sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+                        Status_PE[trade_PE] = {'open':None,'traded':None,'time':None,'date':None, 'ATM':None,'buy_ltp':None,'target':None,'Remark':None,'ltp_ATM':None,'sell_ltp':None,'Pnl':None,'close':None,'low':None,'high':None,'tradeno_CE':None,'xx': Status_PE[trade_PE]['xx'], 'yy': Status_PE[trade_PE]['yy'], 'zz': Status_PE[trade_PE]['zz'] + 2, 'qq': Status_PE[trade_PE]['qq'] + 2}
+                        
+                        Status_PE[trade_PE]['Remark'] ='sl_hit_PE_' + str(Status_PE[trade_PE]['qq']-1)
+                        sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+
+        # ------------------------------------------------------------------------------BUY_PUT_Target4--------------------------------------------------------------------------------------------------------------
+
+            if (Status_PE[trade_PE]['traded'] is None) and (Status_PE[trade_PE]['Remark'] == 'sl_hit_PE_'+ str(dyn_qty))  and sht_Trade.range('G' + str(int(i + 2))).value == 'False' + str(i +2):
+                k = dyn_qty
+                Status_PE[trade_PE]['traded'] = 'yes'
+                Status_PE[trade_PE]['time'] = str(ctime.time())
+                Status_PE[trade_PE]['date'] = str(ctime.date())
+                Status_PE[trade_PE]['ATM'] = CE_ATM
+                Status_PE[trade_PE]['buy_ltp'] = ltp_CE_ATM
+                hist1 = sf.histo_data(name= Status_PE[trade_PE]['ATM'], segment='NFO:', delta=1, interval='minute', continuous=False, oi=False)
+                Status_PE[trade_PE]['open']  = hist1.iloc[-1]['open']
+                Status_PE[trade_PE]['target'] = (Status_PE[trade_PE]['open']) + (Target[k]*(Status_PE[trade_PE]['open'])) 
+                hist2 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist2 = hist2.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+                Status_PE[trade_PE]['low']  = hist2.loc[Completed_candle]['low']
+                
+                sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+                 # pdb.set_trace()    
+            if (Status_PE[trade_PE]['traded'] == 'yes') and (Status_PE[trade_PE]['Remark'] == 'sl_hit_PE_'+str(dyn_qty)) and sht_Trade.range('G' + str(int(i + 2))).value == 'False' + str(i+2):
+                Status_PE[trade_PE]['ltp_ATM'] = kite.ltp(['NFO:'+ Status_PE[trade_PE]['ATM']])['NFO:'+ Status_PE[trade_PE]['ATM']]['last_price']
+                print(Status_PE[trade_PE]['ltp_ATM'])
+                hh = (Status_PE[trade_PE]['date'])+' '+(Status_PE[trade_PE]['time'])[0:5]+':00'+'+05:30'
+                hist3 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist3 = hist3.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+                sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+
+                if (Status_PE[trade_PE]['ltp_ATM'] > Status_PE[trade_PE]['target']) and Status_PE[trade_PE]['Remark'] == 'sl_hit_PE_'+ str(dyn_qty):                        
+                    Status_PE[trade_PE]['sell_ltp'] = Status_PE[trade_PE]['ltp_ATM']
+                    Status_PE[trade_PE]['Pnl'] = Status_PE[trade_PE]['sell_ltp'] - Status_PE[trade_PE]['buy_ltp']
+                    Status_PE[trade_PE]['Remark'] ='Target_hit'
+                    sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+                                            
+                if (Completed_candle > hh):
+                    Status_PE[trade_PE]['close']  = hist3.loc[Completed_candle]['close']                        
+                    if (Status_PE[trade_PE]['close'] < Status_PE[trade_PE]['low']) and Status_PE[trade_PE]['Remark'] == 'sl_hit_PE_'+ str(dyn_qty):
+                        Status_PE[trade_PE]['sell_ltp'] = Status_PE[trade_PE]['ltp_ATM']
+                        Status_PE[trade_PE]['Pnl'] = Status_PE[trade_PE]['sell_ltp'] - Status_PE[trade_PE]['buy_ltp']
+                        Status_PE[trade_PE]['Remark'] ='sl_hit_PE_'+ str(dyn_qty+1)
+                        
+                        sht_PE.range('A1').value = pd.DataFrame(Status_PE).T
+                                                                
+# --------------------------------------------------------------------------------------------BUY_CALL_NRML---------------------------------------------------------------------------------------------
+
+            if (val == 'bc') and Status_CE_Nrml[trade_CE_Nrml]['traded'] is None and (sht_Trade.range('G' + str(int(i + 2))).value == int(i + 2)):
+                k = 0
+                Status_CE_Nrml[trade_CE_Nrml]['traded'] = 'yes'
+                sht_Trade.range('G' + str(int(i + 2))).value = 'False' + str(i + 2)
+                Status_CE_Nrml[trade_CE_Nrml]['time'] = str(ctime.time())
+                Status_CE_Nrml[trade_CE_Nrml]['date'] = str(ctime.date())
+                Status_CE_Nrml[trade_CE_Nrml]['ATM'] = CE_ATM
+                buy_orderid_CE = kite.place_order(variety=kite.VARIETY_REGULAR, exchange=kite.EXCHANGE_NFO, tradingsymbol= Status_CE_Nrml[trade_CE_Nrml]['ATM'], transaction_type=kite.TRANSACTION_TYPE_BUY, quantity= int(Qty), product=kite.PRODUCT_MIS, order_type=kite.ORDER_TYPE_MARKET)
+                Status_CE_Nrml[trade_CE_Nrml]['buy_orderid_CE'] = buy_orderid_CE
+                order_history_CE = kite.order_history(Status_CE_Nrml[trade_CE_Nrml]['buy_orderid_CE'])
+                try:
+                    x = 0
+                    for order in order_history_CE:
+                        if order_history_CE[x]['status'] == 'COMPLETE':
+                            Status_CE_Nrml[trade_CE_Nrml]['buy_ltp']= (order_history_CE[x]['average_price'])
+                        x = x + 1
+                except Exception as e:
+                    print(e)
+                    continue                
+                hist1 = sf.histo_data(name= Status_CE_Nrml[trade_CE_Nrml]['ATM'], segment='NFO:', delta=1, interval='minute', continuous=False, oi=False)
+                Status_CE_Nrml[trade_CE_Nrml]['open']  = hist1.iloc[-1]['open']
+                Status_CE_Nrml[trade_CE_Nrml]['target'] = (Status_CE_Nrml[trade_CE_Nrml]['open']) + (Target[k]*(Status_CE_Nrml[trade_CE_Nrml]['open']))               
+                hist2 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist2 = hist2.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30") 
+                Status_CE_Nrml[trade_CE_Nrml]['low']  = hist2.loc[Completed_candle]['low']
+                sht_CE_Nrml.range('A1').value = pd.DataFrame(Status_CE_Nrml).T
+
+            if (Status_CE_Nrml[trade_CE_Nrml]['traded'] == 'yes') and (Status_CE_Nrml[trade_CE_Nrml]['Remark'] is None) and sht_Trade.range('G' + str(int(i + 2))).value == 'False'+ str(i + 2):
+                Status_CE_Nrml[trade_CE_Nrml]['ltp_ATM'] = kite.ltp(['NFO:'+ Status_CE_Nrml[trade_CE_Nrml]['ATM']])['NFO:'+ Status_CE_Nrml[trade_CE_Nrml]['ATM']]['last_price']
+                print(Status_CE_Nrml[trade_CE_Nrml]['ltp_ATM'])
+                sht_CE_Nrml.range('A1').value = pd.DataFrame(Status_CE_Nrml).T
+                ii = (Status_CE_Nrml[trade_CE_Nrml]['date'])+' '+(Status_CE_Nrml[trade_CE_Nrml]['time'])[0:5]+':00'+'+05:30'
+                hist3 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist3 = hist3.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30") 
+             
+                sht_CE_Nrml.range('A1').value = pd.DataFrame(Status_CE_Nrml).T
+
+
+                if (Status_CE_Nrml[trade_CE_Nrml]['ltp_ATM'] > Status_CE_Nrml[trade_CE_Nrml]['target']) and Status_CE_Nrml[trade_CE_Nrml]['Remark'] is None:
+                    sell_orderid_CE = kite.place_order(variety=kite.VARIETY_REGULAR, exchange=kite.EXCHANGE_NFO, tradingsymbol= Status_CE_Nrml[trade_CE_Nrml]['ATM'], transaction_type=kite.TRANSACTION_TYPE_SELL, quantity= int(Qty), product=kite.PRODUCT_MIS, order_type=kite.ORDER_TYPE_MARKET)
+
+                    Status_CE_Nrml[trade_CE_Nrml]['sell_orderid_CE'] = sell_orderid_CE
+                    order_history_CE = kite.order_history(Status_CE_Nrml[trade_CE_Nrml]['sell_orderid_CE'])
+                    try:
+                        y = 0
+                        for order in order_history_CE:
+                            if order_history_CE[y]['status'] == 'COMPLETE':
+                                Status_CE_Nrml[trade_CE_Nrml]['sell_ltp']= (order_history_CE[y]['average_price'])
+                            y = y + 1
+                    except Exception as e:
+                        print(e)
+                        continue
+                
+                    Status_CE_Nrml[trade_CE_Nrml]['Pnl'] = Status_CE_Nrml[trade_CE_Nrml]['sell_ltp'] - Status_CE_Nrml[trade_CE_Nrml]['buy_ltp']
+                    Status_CE_Nrml[trade_CE_Nrml]['Remark'] ='Target_hit_CE_Nrml'
+
+                    sht_CE_Nrml.range('A1').value = pd.DataFrame(Status_CE_Nrml).T
+                   
+                if (Completed_candle > ii):
+                    Status_CE_Nrml[trade_CE_Nrml]['close']  = hist3.loc[Completed_candle]['close']
+                    sht_CE_Nrml.range('A1').value = pd.DataFrame(Status_CE_Nrml).T
+                   
+                    
+                    if (Status_CE_Nrml[trade_CE_Nrml]['close'] < Status_CE_Nrml[trade_CE_Nrml]['low']) and Status_CE_Nrml[trade_CE_Nrml]['Remark'] is None:
+                        Status_CE_Nrml[trade_CE_Nrml]['sell_ltp'] = Status_CE_Nrml[trade_CE_Nrml]['ltp_ATM']
+                        Status_CE_Nrml[trade_CE_Nrml]['Pnl'] = Status_CE_Nrml[trade_CE_Nrml]['sell_ltp'] - Status_CE_Nrml[trade_CE_Nrml]['buy_ltp']
+                        Status_CE_Nrml[trade_CE_Nrml]['Remark'] ='sl_hit_CE_Nrml'
+                        
+                    
+                        sht_CE_Nrml.range('A1').value = pd.DataFrame(Status_CE_Nrml).T
+
+# --------------------------------------------------------------------------------------------BUY_PUT_NRML---------------------------------------------------------------------------------------------
+
+            if (val == 'bp') and Status_PE_Nrml[trade_PE_Nrml]['traded'] is None and (sht_Trade.range('G' + str(int(i + 2))).value == int(i + 2)):
+                k = 0
+                Status_PE_Nrml[trade_PE_Nrml]['traded'] = 'yes'
+                sht_Trade.range('G' + str(int(i + 2))).value  = 'False' + str(i + 2)
+                Status_PE_Nrml[trade_PE_Nrml]['time'] = str(ctime.time())
+                Status_PE_Nrml[trade_PE_Nrml]['date'] = str(ctime.date())
+                Status_PE_Nrml[trade_PE_Nrml]['ATM'] = PE_ATM
+                buy_orderid_PE = kite.place_order(variety=kite.VARIETY_REGULAR, exchange=kite.EXCHANGE_NFO, tradingsymbol= Status_PE_Nrml[trade_PE_Nrml]['ATM'], transaction_type=kite.TRANSACTION_TYPE_BUY, quantity= int(Qty), product=kite.PRODUCT_MIS, order_type=kite.ORDER_TYPE_MARKET)
+                Status_PE_Nrml[trade_PE_Nrml]['buy_orderid_PE'] = buy_orderid_PE
+                order_history_PE = kite.order_history(Status_PE_Nrml[trade_PE_Nrml]['buy_orderid_PE'])
+                try:
+                    x = 0
+                    for order in order_history_PE:
+                        if order_history_PE[x]['status'] == 'COMPLETE':
+                            Status_PE_Nrml[trade_PE_Nrml]['buy_ltp']= (order_history_PE[x]['average_price'])
+                        x = x + 1
+                except Exception as e:
+                    print(e)
+                    continue     
+                hist1 = sf.histo_data(name= Status_PE_Nrml[trade_PE_Nrml]['ATM'], segment='NFO:', delta=1, interval='minute', continuous=False, oi=False)
+                Status_PE_Nrml[trade_PE_Nrml]['open']  = hist1.iloc[-1]['open']
+                Status_PE_Nrml[trade_PE_Nrml]['target'] = (Status_PE_Nrml[trade_PE_Nrml]['open']) + (Target[k]*(Status_PE_Nrml[trade_PE_Nrml]['open']))
+                hist2 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist2 = hist2.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+                Status_PE_Nrml[trade_CE_Nrml]['high']  = hist2.loc[Completed_candle]['high']
+                sht_PE_Nrml.range('A1').value = pd.DataFrame(Status_PE_Nrml).T
+
+                # pdb.set_trace()
+            if (Status_PE_Nrml[trade_PE_Nrml]['traded'] == 'yes') and (Status_PE_Nrml[trade_PE_Nrml]['Remark'] is None) and sht_Trade.range('G' + str(int(i + 2))).value == 'False' + str(i+2):
+                Status_PE_Nrml[trade_PE_Nrml]['ltp_ATM'] = kite.ltp(['NFO:'+ Status_PE_Nrml[trade_PE_Nrml]['ATM']])['NFO:'+ Status_PE_Nrml[trade_PE_Nrml]['ATM']]['last_price']
+                print(Status_PE_Nrml[trade_PE_Nrml]['ltp_ATM'])
+                jj = (Status_PE_Nrml[trade_PE_Nrml]['date'])+' '+(Status_PE_Nrml[trade_PE_Nrml]['time'])[0:5]+':00'+'+05:30'
+                hist3 = sf.histo_data(name= 'NIFTY 50', segment='NSE:', delta=1, interval='minute', continuous=False, oi=False)
+                hist3 = hist3.set_index('date')
+                Completed_candle = pd.Series(datetime.datetime.now()).dt.floor('1min')[0] - datetime.timedelta(minutes=1)
+                Completed_candle = Completed_candle.strftime("%Y-%m-%d %H:%M:%S+05:30")  
+              
+                sht_PE_Nrml.range('A1').value = pd.DataFrame(Status_PE_Nrml).T
+
+                if (Status_PE_Nrml[trade_PE_Nrml]['ltp_ATM'] > Status_PE_Nrml[trade_PE_Nrml]['target']) and Status_PE_Nrml[trade_PE_Nrml]['Remark'] is None:
+                    Status_PE_Nrml[trade_PE_Nrml]['sell_ltp'] = Status_PE_Nrml[trade_PE_Nrml]['ltp_ATM']
+                    Status_PE_Nrml[trade_PE_Nrml]['Pnl'] = Status_PE_Nrml[trade_PE_Nrml]['sell_ltp'] - Status_PE_Nrml[trade_PE_Nrml]['buy_ltp']
+                    Status_PE_Nrml[trade_PE_Nrml]['Remark'] ='Target_hit_CE_Nrml'
+                    sht_PE_Nrml.range('A1').value = pd.DataFrame(Status_PE_Nrml).T
+                      
+                   
+                if (Completed_candle > jj):
+                    Status_PE_Nrml[trade_PE_Nrml]['close']  = hist3.loc[Completed_candle]['close']
+                    sht_PE_Nrml.range('A1').value = pd.DataFrame(Status_PE_Nrml).T
+
+                    if (Status_PE_Nrml[trade_PE_Nrml]['close'] > Status_PE_Nrml[trade_PE_Nrml]['high']) and Status_PE_Nrml[trade_PE_Nrml]['Remark'] is None:
+                        sell_orderid_PE = kite.place_order(variety=kite.VARIETY_REGULAR, exchange=kite.EXCHANGE_NFO, tradingsymbol= Status_PE_Nrml[trade_PE_Nrml]['ATM'], transaction_type=kite.TRANSACTION_TYPE_SELL, quantity= int(Qty), product=kite.PRODUCT_MIS, order_type=kite.ORDER_TYPE_MARKET)
+
+                        Status_PE_Nrml[trade_PE_Nrml]['sell_orderid_PE'] = sell_orderid_PE
+                        order_history_PE = kite.order_history(Status_PE_Nrml[trade_PE_Nrml]['sell_orderid_PE'])
+                        try:
+                            y = 0
+                            for order in order_history_PE:
+                                if order_history_PE[y]['status'] == 'COMPLETE':
+                                    Status_PE_Nrml[trade_PE_Nrml]['sell_ltp']= (order_history_PE[y]['average_price'])
+                                y = y + 1
+                        except Exception as e:
+                            print(e)
+                            continue
+                        Status_PE_Nrml[trade_PE_Nrml]['Pnl'] = Status_PE_Nrml[trade_PE_Nrml]['sell_ltp'] - Status_PE_Nrml[trade_PE_Nrml]['buy_ltp']
+                        Status_PE_Nrml[trade_PE_Nrml]['Remark'] ='sl_hit_PE_Nrml'
+                       
+                        sht_PE_Nrml.range('A1').value = pd.DataFrame(Status_PE_Nrml).T
+
+
+
+    except Exception as e:
+        print(e)
+        continue
+                       
+                        
