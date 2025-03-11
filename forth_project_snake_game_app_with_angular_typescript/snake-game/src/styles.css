@@ -1,0 +1,28 @@
+/* You can add global styles to this file, and also import other style files */
+/* Global Styling - Tailwind ke bina */
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  background-color: #f3f4f6; /* Light Grey Background */
+}
+
+h1 {
+  color: #4a90e2; /* Blue Color */
+  text-align: center;
+  margin-top: 20px;
+}
+
+.snake-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.snake-board {
+  border: 5px solid #4a90e2;
+  background: #fff;
+}

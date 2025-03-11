@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search List</title>
+</head>
+<body>
+    <h1>Overdue Books</h1>
+	<ul>
+    	{% for lending in overdue %}
+        	<li>
+            	Book: {{ lending.book.title }} <br>
+            	Borrower: {{ lending.member.name }} <br>
+            	Borrowed Date: {{ lending.borrowed_date }} <br>
+            	Return Date: {{ lending.return_date }} <br>
+        	</li>
+    	{% empty %}
+        	<li>No overdue books at the moment.</li>
+    	{% endfor %}
+	</ul>
+
+<body>

@@ -1,0 +1,32 @@
+<!-- <h1>Welcome to Snake Game!</h1>
+<button (click)="startGame()" [disabled]="isGameRunning">Start</button>
+<div class="board-container" tabindex="0" (keydown)="handleKeyPress($event)">
+  <div class="board">
+    <div *ngFor="let cell of board" [ngClass]="getCellClass(cell)"></div>
+      Test
+  </div>
+</div> -->
+
+<h1>🐍 Snake Game 🕹️</h1>
+
+<div class="game-board">
+  <!-- Snake rendering -->
+  <div
+    *ngFor="let segment of snake"
+    class="snake-segment"
+    [style.left.px]="segment.x * 20"
+    [style.top.px]="segment.y * 20"
+  ></div>
+
+  <!-- Food rendering -->
+  <div
+    class="food"
+    [style.left.px]="food.x * 20"
+    [style.top.px]="food.y * 20"
+  ></div>
+</div>
+
+<button (click)="startGame()">Start Game</button>
+
+
+

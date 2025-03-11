@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Books List</title>
+</head>
+<body>
+    <h1>Books List</h1>
+    <ul>
+        {% for book in books %}
+            <li>
+                {{ book.title }} by {{ book.author }} (ISBN: {{ book.isbn }})
+            </li>
+        {% empty %}
+            <li>No books available.</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Available Books</h1>
+    <ul>
+        {% for book in books %}
+            <li>
+                {{ book.title }} by {{ book.author }}
+                {% if book.available_copies < 0 %}
+                    <span>Not available at the moment</span>
+                    {% if book.nearest_return_date %}
+                        <span>Nearest Return Date: {{ book.nearest_return_date }}</span>
+                    {% else %}
+                        <span>No return date available</span>
+                    {% endif %}
+                    
+                {% else %}
+                    <span>-Available Copies: {{ book.available_copies }}</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <form method="get" action="/books/search/">
+        <input type="text" name="q" placeholder="Search by title or author">
+        <button type="submit">Search</button>
+    </form>
+</body>
+</html>

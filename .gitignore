@@ -1,0 +1,13 @@
+# Virtual environment ignore
+myenv/
+
+# Node.js dependencies ignore
+node_modules/
+
+# Python cache ignore
+__pycache__/
+
+# Logs and environment files ignore
+*.log
+*.env
+
